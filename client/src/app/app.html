@@ -1,0 +1,213 @@
+<main class="shell">
+  <section class="workspace">
+    <aside class="left-panel" aria-label="Inserimento richiesta">
+      <div class="brand-row">
+        <div>
+          <p class="eyebrow">LL Agent</p>
+          <h1>Analisi richieste cliente</h1>
+        </div>
+        <span class="status-pill" [class.live]="lastResult()?.provider === 'gemini'">
+          {{ !lastResult() ? 'In attesa' : lastResult()?.provider === 'gemini' ? 'Gemini' : 'Demo mock' }}
+        </span>
+      </div>
+
+      <div class="field-heading">
+        <label class="field-label" for="request-text">Richiesta cliente</label>
+        <small id="request-length">{{ requestText.length }}/8000</small>
+      </div>
+      <textarea
+        id="request-text"
+        [(ngModel)]="requestText"
+        placeholder="Incolla qui email, form o ticket del cliente..."
+        maxlength="8000"
+        aria-describedby="request-length request-error"
+        [attr.aria-invalid]="inputError() ? 'true' : null"
+        [disabled]="loading()"
+      ></textarea>
+      <p id="request-error" class="input-error" role="alert" *ngIf="inputError()">{{ inputError() }}</p>
+
+      <div class="input-actions">
+        <label class="file-button">
+          <input type="file" accept=".txt,.md,text/plain" aria-label="Carica richiesta da file" (change)="onFileSelected($event)" />
+          <span>Carica file</span>
+        </label>
+        <select [(ngModel)]="mode" [disabled]="loading()" aria-label="Modalità analisi">
+          <option value="auto">Auto</option>
+          <option value="mock">Mock</option>
+          <option value="gemini">Gemini</option>
+        </select>
+        <button class="primary" type="button" (click)="analyze()" [disabled]="loading() || requestText.trim().length < 10">
+          {{ loading() ? 'Analisi...' : 'Analizza' }}
+        </button>
+      </div>
+
+      <div class="examples">
+        <div class="section-title">
+          <span>Dataset esempi</span>
+          <small>{{ examples().length }} casi</small>
+        </div>
+        <button
+          type="button"
+          class="example-row"
+          *ngFor="let example of examples()"
+          (click)="useExample(example)"
+          [disabled]="loading()"
+        >
+          <span>{{ example.title }}</span>
+          <small>{{ example.text }}</small>
+        </button>
+      </div>
+    </aside>
+
+    <section class="result-panel" aria-live="polite" [attr.aria-busy]="loading()">
+      <div class="topbar">
+        <div>
+          <p class="eyebrow">Scheda operatore</p>
+          <h2>{{ lastResult() ? 'Risultato analisi' : 'Pronto per analizzare' }}</h2>
+        </div>
+        <button type="button" class="ghost" (click)="clear()" [disabled]="loading()">Nuova analisi</button>
+      </div>
+
+      <div class="empty-state" *ngIf="!lastResult() && !loading() && !error()">
+        <div class="empty-mark">AI</div>
+        <p>Seleziona un esempio o incolla una richiesta reale. La scheda mostrerà categoria, urgenza, sentiment, informazioni mancanti e risposta modificabile.</p>
+      </div>
+
+      <div class="loading-state" role="status" *ngIf="loading()">
+        <span></span>
+        <p>Sto preparando una scheda sintetica per l'operatore...</p>
+      </div>
+
+      <div class="error-state" role="alert" *ngIf="error()">
+        <strong>Analisi non riuscita</strong>
+        <p>{{ error() }}</p>
+      </div>
+
+      <ng-container *ngIf="lastResult() as result">
+        <div class="meta-strip">
+          <span>{{ result.provider === 'gemini' ? result.model : 'Mock rules' }}</span>
+          <span>{{ result.generatedAt | date:'short' }}</span>
+          <span>
+            Confidenza stimata {{ result.analysis.confidence | percent:'1.0-0' }}
+          </span>
+        </div>
+        <p class="confidence-note">
+          La confidenza è una stima indicativa del modello o delle regole mock, non una probabilità calibrata.
+        </p>
+
+        <div class="summary-grid">
+          <article>
+            <label for="analysis-category">Categoria</label>
+            <select
+              id="analysis-category"
+              [(ngModel)]="result.analysis.category"
+              (ngModelChange)="saveCurrentRevision()"
+            >
+              <option value="Problema tecnico">Problema tecnico</option>
+              <option value="Richiesta commerciale">Richiesta commerciale</option>
+              <option value="Reclamo">Reclamo</option>
+              <option value="Richiesta informazioni">Richiesta informazioni</option>
+              <option value="Richiesta urgente">Richiesta urgente</option>
+              <option value="Messaggio ambiguo/incompleto">Messaggio ambiguo/incompleto</option>
+              <option value="Altro">Altro</option>
+            </select>
+          </article>
+          <article [class.high]="result.analysis.urgency === 'Alta'" [class.medium]="result.analysis.urgency === 'Media'">
+            <label for="analysis-urgency">Urgenza</label>
+            <select
+              id="analysis-urgency"
+              [(ngModel)]="result.analysis.urgency"
+              (ngModelChange)="saveCurrentRevision()"
+            >
+              <option value="Bassa">Bassa</option>
+              <option value="Media">Media</option>
+              <option value="Alta">Alta</option>
+            </select>
+          </article>
+          <article>
+            <span>Sentiment</span>
+            <strong>{{ result.analysis.sentiment }}</strong>
+          </article>
+        </div>
+
+        <div class="analysis-layout">
+          <section class="analysis-block">
+            <h3>Riassunto</h3>
+            <p>{{ result.analysis.summary }}</p>
+          </section>
+
+          <section class="analysis-block">
+            <h3>Azione consigliata</h3>
+            <p>{{ result.analysis.recommendedAction }}</p>
+          </section>
+
+          <section class="analysis-block">
+            <h3>Informazioni mancanti</h3>
+            <ul *ngIf="result.analysis.missingInformation.length; else noMissing">
+              <li *ngFor="let item of result.analysis.missingInformation">{{ item }}</li>
+            </ul>
+            <ng-template #noMissing>
+              <p>Nessuna informazione critica mancante.</p>
+            </ng-template>
+          </section>
+
+          <section class="analysis-block">
+            <h3>Evidenze</h3>
+            <ul *ngIf="result.analysis.evidence.length; else noEvidence">
+              <li *ngFor="let item of result.analysis.evidence">{{ item }}</li>
+            </ul>
+            <ng-template #noEvidence>
+              <p>Nessuna evidenza specifica disponibile.</p>
+            </ng-template>
+          </section>
+        </div>
+
+        <section class="reply-editor">
+          <div class="section-title">
+            <span>Bozza risposta modificabile</span>
+            <button
+              type="button"
+              class="ghost compact"
+              [class.copy-success]="copyFeedback() === 'success'"
+              [class.copy-error]="copyFeedback() === 'error'"
+              (click)="copyReply()"
+              aria-live="polite"
+            >
+              {{ copyFeedback() === 'success' ? 'Copiata' : copyFeedback() === 'error' ? 'Copia non riuscita' : 'Copia' }}
+            </button>
+          </div>
+          <textarea
+            [(ngModel)]="editableReply"
+            (ngModelChange)="saveCurrentRevision()"
+            aria-label="Bozza risposta modificabile"
+          ></textarea>
+        </section>
+
+        <div class="fallback-note" *ngIf="result.fallbackReason">
+          Gemini non disponibile: sto mostrando il risultato mock. Dettaglio tecnico: {{ result.fallbackReason }}
+        </div>
+      </ng-container>
+    </section>
+
+    <aside class="history-panel" aria-label="Storico locale">
+      <div class="section-title">
+        <span>Storico locale</span>
+        <button type="button" class="ghost compact" (click)="exportHistory()" [disabled]="history().length === 0">JSON</button>
+      </div>
+      <button
+        type="button"
+        class="history-row"
+        *ngFor="let item of history()"
+        [class.high-priority]="item.analysis.urgency === 'Alta'"
+        (click)="restoreHistory(item)"
+      >
+        <span class="history-heading">
+          <strong>{{ item.analysis.category }}</strong>
+          <span class="urgency-badge" *ngIf="item.analysis.urgency === 'Alta'">Urgenza alta</span>
+        </span>
+        <small>{{ item.analysis.summary }}</small>
+      </button>
+      <p class="muted" *ngIf="history().length === 0">Le analisi completate appariranno qui solo nel browser.</p>
+    </aside>
+  </section>
+</main>
