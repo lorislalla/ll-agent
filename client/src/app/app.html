@@ -6,9 +6,6 @@
           <p class="eyebrow">LL Agent</p>
           <h1>Analisi richieste cliente</h1>
         </div>
-        <span class="status-pill" [class.live]="lastResult()?.provider === 'gemini'">
-          {{ !lastResult() ? 'In attesa' : lastResult()?.provider === 'gemini' ? 'Gemini' : 'Demo mock' }}
-        </span>
       </div>
 
       <div class="field-heading">

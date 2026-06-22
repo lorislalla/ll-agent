@@ -42,4 +42,8 @@ Con l'attuale output JSON strutturato, lo streaming aggiungerebbe complessità e
 
 ## Ordine di priorità
 
-Come primo incremento sceglierei evidenziazione delle evidenze e feedback operatore, perché aumentano la comprensione dell'output dell'AI e la capacità di valutarlo. Successivamente lavorerei sul resto.
+Come prime implementazioni sceglierei l'evidenziazione nel testo originale e il feedback operatore, perché aumentano la comprensione dell'output dell'AI e la capacità di valutarlo. Successivamente lavorerei sul resto, anche se in produzione ritengo fondamentale avere una piattaforma di osservabilità per capire come si comporta il sistema nel tempo (es: Langfuse).
+
+## Evoluzioni future
+
+In un'ottica più futura invece, penserei di implementare un framework con dei grafi, per costruire dei sotto-agenti specifici per ogni esigenza. Per esempio uno per la classificazione, uno per la generazione della risposta, uno per il recupero di informazioni dal database (RAG), ecc., per poi arrivare a sistemi di multi-agent, dove uno di questi fa da supervisore e coordina gli altri con strumenti specifici e/o tool per i vari task.

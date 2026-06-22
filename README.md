@@ -20,7 +20,13 @@ npm install
 npm run dev
 ```
 
-Poi aprire nel browser: http://localhost:4300
+Poi aprire nel browser:
+
+- http://localhost:4300 per la versione originale.
+
+Oppure:
+
+- http://localhost:4300/v2 per la versione a tab.
 
 Il backend parte su http://localhost:3333; Angular usa client/proxy.conf.json per chiamare /api.
 

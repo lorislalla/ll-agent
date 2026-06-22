@@ -3,14 +3,16 @@
 ## UX
 
 Ho progettato l'interfaccia pensando a un operatore customer care che deve comprendere e gestire una richiesta rapidamente.
-Su schermi grandi le tre aree principali sono visibili contemporaneamente: a sinistra si inserisce o si seleziona la richiesta, al centro si consulta e revisiona l'analisi, a destra si recupera lo storico locale.
+Nella prima versione, su schermi grandi, le tre aree principali sono visibili contemporaneamente: a sinistra si inserisce o si seleziona la richiesta, al centro si consulta e revisiona l'analisi, a destra si recupera lo storico locale.
 Questa disposizione segue il flusso naturale di lavoro: input, decisione, memoria e permette di vedere a colpo d'occhio tutte le funzionalità richieste senza cambiare pagina.
 
 L'interfaccia dà una priorità a categoria, urgenza e azione consigliata e evidenzia le richieste urgenti anche nello storico.
-Gli stati di attesa, caricamento, errore e risultato sono distinti.
 Categoria, urgenza e bozza di risposta sono modificabili (l'AI deve supportare la decisione, ma non sostituire il controllo umano).
 Le revisioni vengono salvate nel browser in modo automatico e lo storico può essere esportato in JSON.
-Il layout è responsive: sui dispositivi più piccoli i pannelli vengono disposti verticalmente, mantenendo sempre lo stesso ordine logico.
+
+In un secondo momento ho realizzato una variante UX separata, accessibile su `/v2`, che organizza le stesse funzionalità in tre tab: Richiesta, Analisi e Storico. Questa versione propone un percorso più guidato e progressivo, mantenendo invariata la logica applicativa.
+
+Il layout, in entrambe le versioni, è responsive: sui dispositivi più piccoli i pannelli vengono disposti verticalmente, mantenendo sempre lo stesso ordine logico.
 
 ## Architettura
 

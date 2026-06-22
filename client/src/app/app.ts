@@ -47,7 +47,7 @@ interface SavedAnalysis extends AnalyzeResponse {
 }
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-classic',
   imports: [DatePipe, FormsModule, NgFor, NgIf, PercentPipe],
   templateUrl: './app.html',
   styleUrl: './app.css'
@@ -179,8 +179,8 @@ export class App implements OnInit {
   }
 
   // Esporta lo storico corrente come file JSON.
-  exportHistory(): void {
-    const blob = new Blob([JSON.stringify(this.history(), null, 2)], { type: 'application/json' });
+  exportHistory(items: SavedAnalysis[] = this.history()): void {
+    const blob = new Blob([JSON.stringify(items, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
