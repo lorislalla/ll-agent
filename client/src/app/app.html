@@ -83,7 +83,7 @@
       <ng-container *ngIf="lastResult() as result">
         <div class="meta-strip">
           <span>{{ result.provider === 'gemini' ? result.model : 'Mock rules' }}</span>
-          <span>{{ result.generatedAt | date:'short' }}</span>
+          <span>{{ result.generatedAt | date:'dd/MM/yyyy, HH:mm' }}</span>
           <span>
             Confidenza stimata {{ result.analysis.confidence | percent:'1.0-0' }}
           </span>

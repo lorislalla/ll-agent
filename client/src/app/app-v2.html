@@ -157,7 +157,7 @@
       <ng-container *ngIf="lastResult() as result">
         <div class="meta-strip">
           <span>{{ result.provider === 'gemini' ? result.model : 'Mock rules' }}</span>
-          <span>{{ result.generatedAt | date:'short' }}</span>
+          <span>{{ result.generatedAt | date:'dd/MM/yyyy, HH:mm' }}</span>
           <span>Confidenza stimata {{ result.analysis.confidence | percent:'1.0-0' }}</span>
         </div>
         <p class="confidence-note">La confidenza è una stima indicativa del modello o delle regole mock, non una probabilità calibrata.</p>
@@ -263,7 +263,7 @@
         <button type="button" class="history-row" *ngFor="let item of sortedHistory(); let index = index" (click)="restoreHistory(item)">
           <span>{{ (index + 1).toString().padStart(2, '0') }}</span>
           <span>
-            <small>{{ item.generatedAt | date:'short' }}</small>
+            <small>{{ item.generatedAt | date:'dd/MM/yyyy, HH:mm' }}</small>
             <strong>{{ item.analysis.category }}</strong>
             <span>{{ item.analysis.summary }}</span>
           </span>
