@@ -29,7 +29,7 @@ app.get("/api/examples", (_req, res) => {
   res.json({ examples })
 })
 
-// Valida la richiesta e restituisce l'analisi prodotta dal provider selezionato.
+// Valida la richiesta e restituisce l'analisi prodotta dal provider selezionato, solo se l'utente non ha superato il limite di richieste al minuto.
 app.post("/api/analyze", analyzeRateLimit, async (req, res) => {
   const parsed = CustomerRequestSchema.safeParse(req.body)
   if (!parsed.success) {

@@ -2,12 +2,12 @@ export const examples = [
   {
     id: "technical-urgent",
     title: "Problema tecnico urgente",
-    text: "Buongiorno, da ieri il nostro team non riesce piu ad accedere alla piattaforma. Abbiamo una demo con un cliente domani mattina e siamo bloccati. Potete aiutarci urgentemente?"
+    text: "Buongiorno, da ieri il nostro team non riesce più ad accedere alla piattaforma. Abbiamo una demo con un cliente domani mattina e siamo bloccati. Potete aiutarci urgentemente?"
   },
   {
     id: "commercial",
     title: "Richiesta commerciale",
-    text: "Salve, vorremmo capire quale piano e piu adatto per un team di 25 persone. Potete inviarci un preventivo e fissare una demo?"
+    text: "Salve, vorremmo capire quale piano e più adatto per un team di 25 persone. Potete inviarci un preventivo e fissare una demo?"
   },
   {
     id: "complaint",
@@ -17,7 +17,7 @@ export const examples = [
   {
     id: "generic-info",
     title: "Richiesta generica",
-    text: "Buongiorno, vorrei sapere quali funzionalita sono incluse nel vostro servizio e se e disponibile una prova gratuita."
+    text: "Buongiorno, vorrei sapere quali funzionalità sono incluse nel vostro servizio e se e disponibile una prova gratuita."
   },
   {
     id: "ambiguous",

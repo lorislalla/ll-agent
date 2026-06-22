@@ -19,7 +19,7 @@ export async function analyzeWithGemini(text: string): Promise<{ analysis: Analy
     config: {
       temperature: 0.2, // Deve essere basso per avere una risposta più deterministica
       responseMimeType: "application/json",
-      responseSchema: { // Questo è lo schema con cui validiamo la struttura della risposta di Gemini prima di esporla all'applicazione
+      responseSchema: {
         type: Type.OBJECT,
         properties: {
           category: { type: Type.STRING },
@@ -57,6 +57,7 @@ export async function analyzeWithGemini(text: string): Promise<{ analysis: Analy
     throw createRetryableResponseError("Risposta Gemini con JSON non valido")
   }
 
+  // Questo è lo schema con cui validiamo la struttura della risposta di Gemini prima di esporla all'applicazione.
   const parsed = AnalysisSchema.safeParse(candidate)
   if (!parsed.success) {
     const details = parsed.error.issues.map(issue => `${issue.path.join(".")}: ${issue.message}`).join("; ")
